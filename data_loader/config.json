@@ -1,22 +1,21 @@
 {
     "search_config": {
         "part": "id,snippet",
-        "maxResults": 50,
+        "maxResults": 10,
         "order": "date",
         "publishedAfter": "2020-01-01T00:00:00Z",
         "type": "video",
-        "pageToken": null,
+        "pageToken": "",
         "q": "Dota 2 Invoker"
     },
     "api_keys": [
-        "AIzaSyCi1hWJ6FpW_pnPQ5X7vhh1hoLMt3SmMWo",
-        "AIzaSyCoYaP5yIo2xXX1vHi1k4Cv6ahYDhTe57Y",
-        "AIzaSyDy1KzJny3uf30H6UOBcRFb8MtujVSBeOE",
-        "AIzaSyAAAugTX5nmB4ats8BE2EW51A5EONJKRR8",
-        "AIzaSyDIyCAcn2UdZdiic8zWCxVijEHMdFbPEwk"
+        "api_key1",
+        "api_key2",
+        "api_key3"
     ],
     "api_url": "https://www.googleapis.com/youtube/v3/search",
     "sleep_interval": 10,
+    "max_data_to_fetch": 200,
     "db_config": {
         "host": "localhost",
         "port": 28015,
