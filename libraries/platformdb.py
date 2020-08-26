@@ -25,3 +25,9 @@ class PlatformDB(AsyncObject):
 
         # Videos table
         self.videos = self.db.table('videos')
+
+    ###########################################################################
+    # Insert a video
+    ###########################################################################
+    async def insert_video(self, data):
+        return await self.videos.insert(data).run(self.conn)
