@@ -1,0 +1,24 @@
+{
+    "search_config": {
+        "part": "id,snippet",
+        "maxResults": 10,
+        "order": "date",
+        "publishedAfter": "2020-01-01T00:00:00Z",
+        "type": "video",
+        "pageToken": "",
+        "q": "Dota 2 Invoker"
+    },
+    "api_keys": [
+        "api_key1",
+        "api_key2",
+        "api_key3"
+    ],
+    "api_url": "https://www.googleapis.com/youtube/v3/search",
+    "sleep_interval": 10,
+    "max_data_to_fetch": 200,
+    "db_config": {
+        "host": "localhost",
+        "port": 28015,
+        "db_name": "platform"
+    }
+}
