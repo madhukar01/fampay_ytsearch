@@ -154,7 +154,8 @@ class DataLoader(AsyncObject):
             # Convert date string to timestamp
             timestamp = datetime.datetime.strptime(
                 publish_time,
-                '%Y-%m-%dT%H:%M:%SZ')
+                '%Y-%m-%dT%H:%M:%SZ').timestamp() * 1000
+
             # Insert valid video to database
             await self.platformdb.insert_video(
                 {
