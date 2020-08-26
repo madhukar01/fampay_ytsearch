@@ -4,6 +4,7 @@ import asyncio
 import copy
 from libraries import AsyncObject, PlatformDB
 import os
+from setup_database import setup_database
 import ujson
 from urllib.parse import urlencode
 import uvloop
@@ -31,7 +32,6 @@ class DataLoader(AsyncObject):
 
         # Assumption is that if config file is present, It is in valid format
         #   and contains required data
-        self.db_config = config['db_config']
         self.api_keys = config['api_keys']
         self.search_config = config['search_config']
         self.api_url = config['api_url']
@@ -44,7 +44,8 @@ class DataLoader(AsyncObject):
         self.fetched_data = 0
 
         # Initialize database
-        # self.platformdb = await PlatformDB(config=db_config)
+        db_config = config['db_config']
+        self.platformdb = await PlatformDB(config=db_config)
 
         # Intiialize HTTP client
         self.session = aiohttp.ClientSession(json_serialize=ujson.dumps)
@@ -131,12 +132,38 @@ class DataLoader(AsyncObject):
     # Process data - Process fetched data and insert to database
     ###########################################################################
     async def process_data(self, data):
-        page_info = data.get('pageInfo', {})
-        total_results = page_info.get('totalResults', 0)
-        self.fetched_data += page_info.get('resultsPerPage', 0)
+        # Process video data elements and insert to DB
+        video_elements = data.get('items', [])
+        for element in video_elements:
+            video_id = element.get('id', {}).get('videoId', None)
+            title = element.get('snippet', {}).get('title', None)
+            description = element.get('snippet', {}).get('description', None)
+            thumbnails = element.get('snippet', {}).get('thumbnails', None)
+            publish_time = element.get('snippet', {}).get('publishTime', None)
 
-        # Insert to database
+            # Check for validity of data
+            if video_id is None\
+               or title is None\
+               or description is None\
+               or thumbnails is None\
+               or publish_time is None:
+                print(video_id, title, description, thumbnails, publish_time)
+                continue
 
+            # Insert valid video to database
+            await self.platformdb.insert_video(
+                {
+                    'video_id': video_id,
+                    'title': title,
+                    'description': description,
+                    'thumbnails': thumbnails,
+                    'publish_time': publish_time
+                })
+            self.fetched_data += 1
+
+
+# Setup database
+setup_database()
 
 # Obtain event loop and Start data loader
 loop = asyncio.get_event_loop()
