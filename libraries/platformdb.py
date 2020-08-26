@@ -44,3 +44,14 @@ class PlatformDB(AsyncObject):
     ###########################################################################
     async def get_videos_count(self):
         return await self.videos.count().run(self.conn)
+
+    ###########################################################################
+    # Search videos
+    ###########################################################################
+    async def search_videos(self, query_string, limit):
+        query_string = '.*%s.*' % query_string.strip().lower()
+        return await self.videos.filter(
+            lambda video:
+                video['title'].downcase().match(query_string) |
+                video['description'].downcase().match(query_string))\
+            .limit(limit).order_by(self.db.desc('timestamp')).run(self.conn)
