@@ -9,7 +9,7 @@ from webargs.aiohttpparser import parser
 handler_args = {
                     # query (string) - query string to search
                     'query': fields.Str(required=True),
-                    'max_results': fields.Int(missing=10)
+                    'maxresults': fields.Int(missing=10)
                 }
 
 
@@ -25,7 +25,7 @@ class SearchVideos(web.View, CorsViewMixin):
         args = await parser.parse(handler_args, self.request)
 
         query_string = args['query']
-        max_results = args['max_results']
+        max_results = args['maxresults']
 
         # Get search results from database
         results = await self.request.app['platformdb']\
