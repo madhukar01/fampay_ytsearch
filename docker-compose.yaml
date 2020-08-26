@@ -22,3 +22,17 @@ services:
     image: rethinkdb
     container_name: realtime_database
     network_mode: "host"
+
+# ==================================
+# AIOHTTP REST Server
+# ==================================
+  rest_server:
+    image: platform-base
+    environment:
+      - PYTHONPATH=/platform
+    working_dir: /platform/rest_server
+    command: python3 -u main.py
+    volumes:
+      - /home/helios/Desktop/fampay_ytsearch:/platform
+    container_name: rest_server
+    network_mode: "host"
