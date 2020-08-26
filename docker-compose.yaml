@@ -2,20 +2,6 @@ version: '3.7'
 
 services:
 # ==================================
-# Data Loader
-# ==================================
-  data_loader:
-    image: platform-base
-    environment:
-      - PYTHONPATH=/platform
-    working_dir: /platform/data_loader
-    command: python3 -u load_data.py
-    volumes:
-      - /home/helios/Desktop/fampay_ytsearch:/platform
-    container_name: data_loader
-    network_mode: "host"
-
-# ==================================
 # RethinkDB Database
 # ==================================
   realtime_database:
@@ -24,15 +10,29 @@ services:
     network_mode: "host"
 
 # ==================================
+# Data Loader
+# ==================================
+  data_loader:
+    image: platform-base
+    environment:
+      - PYTHONPATH=/app
+    working_dir: /app/data_loader
+    command: python3 -u load_data.py
+    container_name: data_loader
+    depends_on:
+      - realtime_database
+    network_mode: "host"
+
+# ==================================
 # AIOHTTP REST Server
 # ==================================
   rest_server:
     image: platform-base
     environment:
-      - PYTHONPATH=/platform
-    working_dir: /platform/rest_server
+      - PYTHONPATH=/app
+    working_dir: /app/rest_server
     command: python3 -u main.py
-    volumes:
-      - /home/helios/Desktop/fampay_ytsearch:/platform
     container_name: rest_server
+    depends_on:
+      - realtime_database, data_loader
     network_mode: "host"
