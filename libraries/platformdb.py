@@ -31,3 +31,16 @@ class PlatformDB(AsyncObject):
     ###########################################################################
     async def insert_video(self, data):
         return await self.videos.insert(data).run(self.conn)
+
+    ###########################################################################
+    # Get vidoes - ordered by time
+    ###########################################################################
+    async def get_videos(self, limit):
+        return await self.videos.order_by(self.db.desc('timestamp'))\
+            .limit(limit).run(self.conn)
+
+    ###########################################################################
+    # Get count of stored videos
+    ###########################################################################
+    async def get_videos_count(self):
+        return await self.videos.count().run(self.conn)
