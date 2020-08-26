@@ -5,6 +5,7 @@ import copy
 from libraries import AsyncObject, PlatformDB
 import os
 import ujson
+from urllib.parse import urlencode
 import uvloop
 
 
@@ -22,7 +23,7 @@ class DataLoader(AsyncObject):
             return
         else:
             try:
-                config = ujson.loads(open('config.json', 'r'))
+                config = ujson.load(open('config.json', 'r'))
             except Exception as e:
                 print('===== Error reading configuration file =====')
                 print(e)
@@ -35,10 +36,12 @@ class DataLoader(AsyncObject):
         self.search_config = config['search_config']
         self.api_url = config['api_url']
         self.sleep_interval = config['sleep_interval']
+        self.max_data_to_fetch = config['max_data_to_fetch']
 
         # API Key index
         self.api_key_index = 0
         self.max_key_index = len(self.api_keys)
+        self.fetched_data = 0
 
         # Initialize database
         # self.platformdb = await PlatformDB(config=db_config)
@@ -46,31 +49,93 @@ class DataLoader(AsyncObject):
         # Intiialize HTTP client
         self.session = aiohttp.ClientSession(json_serialize=ujson.dumps)
 
-        # Start loading data
-        await self.load_data()
+        try:
+            # Start loading data
+            await self.load_data()
+        except Exception as e:
+            print('An error occurred while loading data\n%s' % e)
+        finally:
+            # Close HTTP session
+            await self.session.close()
 
     ###########################################################################
     # Load data - Starts loading data from youtube to DB
     ###########################################################################
     async def load_data(self):
-        api_key = self.api_keys[self.api_key_index]
-        data = copy.deepcopy(self.search_config)
-        data['token'] = api_key
+        next_page_token = ''
+        first_request = True
 
-        response = await self.fetch_data(
-            url=self.api_url,
-            data=data)
-        print(await response.json())
+        # Keep fetching until there is no next page
+        # Or max amount of data is fetched
+        while next_page_token or first_request:
+            response = await self.fetch_data(
+                url=self.api_url,
+                data=self.search_config,
+                page_token=next_page_token)
+
+            # Set first request to false
+            first_request = False
+
+            # If response status is not 200, Retry by changing keys
+            while response.status != 200:
+                print('Error fetching response with key: %s'
+                      % self.api_key_index)
+                print('Response status code: %s\n' % response.status)
+
+                # Check if you have more keys available
+                self.api_key_index += 1
+                if self.api_key_index >= self.max_key_index:
+                    print('Exhausted available keys')
+                    print('==================================================')
+                    return
+
+                print('Retrying with key: ', self.api_key_index)
+                response = await self.fetch_data(
+                    url=self.api_url,
+                    data=self.search_config,
+                    page_token=next_page_token)
+
+            # Decode available pages info
+            response_data = await response.json()
+            next_page_token = response_data.get('nextPageToken', None)
+            await self.process_data(response_data)
+
+            # Check if we have reached max data to fetch limit
+            if self.fetched_data >= self.max_data_to_fetch:
+                print('Data loading completed')
+                print('Data loaded: ', self.max_data_to_fetch)
+                print('=====================================================')
+                return
+
+            # Wait before sending next request
+            print('Total data loaded: %s' % self.fetched_data)
+            print('Sleeping for %d seconds' % self.sleep_interval)
+            await asyncio.sleep(self.sleep_interval)
 
     ###########################################################################
     # Fetch data - Makes an HTTP GET request and fetches data
     ###########################################################################
-    async def fetch_data(self, url, data):
-        response = await self.session.get(
-            url=self.api_url,
-            data=ujson.dumps(data))
-        print(response.status)
+    async def fetch_data(self, url, data, page_token):
+        # Send request using current API key
+        api_key = self.api_keys[self.api_key_index]
+        data['key'] = api_key
+        data['pageToken'] = page_token
+
+        # Generate URL with query parameters
+        final_url = '%s?%s' % (url, urlencode(data))
+
+        response = await self.session.get(url=final_url)
         return response
+
+    ###########################################################################
+    # Process data - Process fetched data and insert to database
+    ###########################################################################
+    async def process_data(self, data):
+        page_info = data.get('pageInfo', {})
+        total_results = page_info.get('totalResults', 0)
+        self.fetched_data += page_info.get('resultsPerPage', 0)
+
+        # Insert to database
 
 
 # Obtain event loop and Start data loader
