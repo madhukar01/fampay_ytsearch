@@ -9,7 +9,7 @@ from webargs.aiohttpparser import parser
 # Parameter validation
 handler_args = {
                     # pagenumber (integer) - pagenumber
-                    'pagenumber': fields.Int(missing=0),
+                    'pagenumber': fields.Int(missing=1),
                 }
 
 

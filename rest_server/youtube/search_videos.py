@@ -27,6 +27,10 @@ class SearchVideos(web.View, CorsViewMixin):
         query_string = args['query']
         max_results = args['maxresults']
 
+        # Check if max results is negative
+        if max_results < 0:
+            max_results = 10
+
         # Get search results from database
         results = await self.request.app['platformdb']\
             .search_videos(
