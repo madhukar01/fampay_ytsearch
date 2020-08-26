@@ -19,6 +19,7 @@
     - Parameter:
         - `pagenumber` - Integer, Defaults to 1 if missing
     - Page size is set to 10
+    - Sample request `http://localhost:4001/youtube/storedvideos?pagenumber=1`
     - Sample response:
         ```
         {
@@ -35,14 +36,15 @@
     - Parameters:
         - `query` - String, Required, String to search
         - `maxresults` - Integer, Defaults to 10 if missing
-        - Sample response:
-            ```
-            {
-                'search_results': [x, y, z] # Array of video elements
-            }
-            ```
-        - Search results will be empty if there are no videos with matching Title / Prescription found in database  
-        (Strongly coupled search - Regex based, in the order of words in query)
+    - Sample request `http://localhost:4001/youtube/search?query=miracle&maxresults=5`
+    - Sample response:
+        ```
+        {
+            'search_results': [x, y, z] # Array of video elements
+        }
+        ```
+    - Search results will be empty if there are no videos with matching Title / Prescription found in database  
+    (Strongly coupled search - Regex based, in the order of words in query)
 
 
 ### Assumptions
