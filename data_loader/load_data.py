@@ -47,6 +47,8 @@ class DataLoader(AsyncObject):
         if self.max_key_index < 1:
             print('No API keys found in config file',
                   'Please update the config and restart the container')
+            print('=====================================================')
+            return
 
         # Initialize database
         db_config = config['db_config']

@@ -11,7 +11,6 @@ class PlatformDB(AsyncObject):
     Platform database module
     '''
     async def __init__(self, config={}):
-        # Fetch configuration from Redis server
         host = config.get('host', 'localhost')
         port = config.get('port', 28015)
         db_name = config.get('db_name', 'platform')

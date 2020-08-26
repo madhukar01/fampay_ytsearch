@@ -43,7 +43,7 @@
             'search_results': [x, y, z] # Array of video elements
         }
         ```
-    - Search results will be empty if there are no videos with matching Title / Prescription found in database  
+    - Search results will be empty if there are no videos with matching Title / Description found in database  
     (Strongly coupled search - Regex based, in the order of words in query)
 
 
