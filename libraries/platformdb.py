@@ -19,9 +19,9 @@ class PlatformDB(AsyncObject):
         # Connect to RethinkDB
         self.db = RethinkDB()
         self.db.set_loop_type(library='asyncio')
-        self.conn = await self.__db.connect(host=host,
-                                            port=port,
-                                            db=db_name)
+        self.conn = await self.db.connect(host=host,
+                                          port=port,
+                                          db=db_name)
 
         # Videos table
         self.videos = self.db.table('videos')
