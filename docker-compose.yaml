@@ -5,12 +5,20 @@ services:
 # Data Loader
 # ==================================
   data_loader:
-    image: yts_base
+    image: platform-base
     environment:
-      - PYTHONPATH=/platform/libraries
+      - PYTHONPATH=/platform
     working_dir: /platform/data_loader
     command: python3 -u load_data.py
     volumes:
       - /home/helios/Desktop/fampay_ytsearch:/platform
     container_name: data_loader
+    network_mode: "host"
+
+# ==================================
+# RethinkDB Database
+# ==================================
+  realtime_database:
+    image: rethinkdb
+    container_name: realtime_database
     network_mode: "host"
