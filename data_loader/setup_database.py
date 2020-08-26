@@ -15,7 +15,7 @@ def setup_database():
         r.db('platform').table_create('videos',
                                       primary_key='video_id').run()
     except Exception as e:
-        print(e)
+        print('Database is already setup')
     else:
         print('Database setup successful')
 
