@@ -10,6 +10,8 @@ def setup_routes(app):
     app.add_routes((
         web.view('/youtube/storedvideos',
                  youtube.StoredVideos),
+        web.view('/youtube/search',
+                 youtube.SearchVideos)
     ))
 
     cors = aiohttp_cors.setup(app, defaults={
