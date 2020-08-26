@@ -2,6 +2,7 @@
 import aiohttp
 import asyncio
 import copy
+import datetime
 from libraries import AsyncObject, PlatformDB
 import os
 from setup_database import setup_database
@@ -150,6 +151,10 @@ class DataLoader(AsyncObject):
                 print(video_id, title, description, thumbnails, publish_time)
                 continue
 
+            # Convert date string to timestamp
+            timestamp = datetime.datetime.strptime(
+                publish_time,
+                '%Y-%m-%dT%H:%M:%SZ')
             # Insert valid video to database
             await self.platformdb.insert_video(
                 {
@@ -157,7 +162,7 @@ class DataLoader(AsyncObject):
                     'title': title,
                     'description': description,
                     'thumbnails': thumbnails,
-                    'publish_time': publish_time
+                    'timestamp': timestamp
                 })
             self.fetched_data += 1
 
