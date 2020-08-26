@@ -34,5 +34,6 @@ services:
     command: python3 -u main.py
     container_name: rest_server
     depends_on:
-      - realtime_database, data_loader
+      - realtime_database
+      - data_loader
     network_mode: "host"
