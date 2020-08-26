@@ -1,5 +1,6 @@
 from aiohttp import web
 import aiohttp_cors
+import youtube
 
 
 ###############################################################################
@@ -7,6 +8,8 @@ import aiohttp_cors
 ###############################################################################
 def setup_routes(app):
     app.add_routes((
+        web.view('/youtube/storedvideos',
+                 youtube.StoredVideos),
     ))
 
     cors = aiohttp_cors.setup(app, defaults={
