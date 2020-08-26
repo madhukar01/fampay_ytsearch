@@ -56,5 +56,5 @@ Validation of the config is not done, Please edit with your own risk :)
 - `search_config: order` - Sorting order of results from youtube data API
 - `search_config: publishedAfter` - Fetch videos that are published after this timestamp
 - `search_config: q` - Query string to search for loading data
-- `sleep_interval` - Interval to sleep between subsequent API call
+- `sleep_interval` - Interval to sleep (in seconds) between subsequent API call
 - `max_data_to_fetch` - Total count of videos to fetch (Each API key allows count of 10000 per day, Please use this accordingly to control usgae quota)
