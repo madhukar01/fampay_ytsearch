@@ -44,6 +44,10 @@ class DataLoader(AsyncObject):
         self.max_key_index = len(self.api_keys)
         self.fetched_data = 0
 
+        if self.max_key_index < 1:
+            print('No API keys found in config file',
+                  'Please update the config and restart the container')
+
         # Initialize database
         db_config = config['db_config']
         self.platformdb = await PlatformDB(config=db_config)
