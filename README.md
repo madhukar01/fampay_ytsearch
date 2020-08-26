@@ -19,7 +19,7 @@
     - Parameter:
         - `pagenumber` - Integer, Defaults to 1 if missing
     - Page size is set to 10
-    - Sample request `http://localhost:4001/youtube/storedvideos?pagenumber=1`
+    - Sample request http://localhost:4001/youtube/storedvideos?pagenumber=1
     - Sample response:
         ```
         {
@@ -36,7 +36,7 @@
     - Parameters:
         - `query` - String, Required, String to search
         - `maxresults` - Integer, Defaults to 10 if missing
-    - Sample request `http://localhost:4001/youtube/search?query=miracle&maxresults=5`
+    - Sample request http://localhost:4001/youtube/search?query=miracle&maxresults=5
     - Sample response:
         ```
         {
